@@ -2,6 +2,9 @@
 Hexagonal arrays used for representing the space of the simulation.
 =#
 
+module HexagonArrays
+export AxialRange, HexagonArray
+
 #Ranges used for axes of a hexagonal grid with axial coordinates
 #Equivalent to UnitRange for basically all cases
 #Functions shamelessly copied from the example ZeroRange in the CustomUnitRanges module
@@ -46,13 +49,13 @@ end
 
 function Base.checkbounds(axr::AxialRange{T}, i::Integer) where {T}
     if !(axr.start <= i <= axr.stop)
-        Base.throw_boundserror(axr, i)
+        throw(boundserror(axr, i))
     end
 end
 
 function Base.checkbounds(axr::AxialRange{T}, s::AbstractUnitRange{S}) where {T, S}
     if !(axr.start <= start(s) & axr.stop >= stop(s))
-        Base.throw_boundserror(axr, i)
+        throw(boundserror(axr, i))
     end
 end
 
@@ -217,9 +220,11 @@ function testHexagonalArrays()
     @assert H[1,1] == 1207
     try
         print(H[-1, -1])
-        print("Failed negative check: accessed $(size(H)[2])×$(size(H)[1]) HexagonArray at [-1,-1]"
+        print("Failed negative check: accessed $(size(H)[2])×$(size(H)[1]) HexagonArray at [-1,-1]")
     catch BoundsError
         #task failed successfully
     end
+    #return H
+end
 
 end
