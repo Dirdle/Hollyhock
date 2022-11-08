@@ -7,8 +7,8 @@ export AxialRange, HexagonArray
 
 #Ranges used for axes of a hexagonal grid with axial coordinates
 #Equivalent to UnitRange for basically all cases
-#Functions shamelessly copied from the example ZeroRange in the CustomUnitRanges module
-mutable struct AxialRange{T<:Integer} <: AbstractUnitRange{T}
+#Functions based on the example ZeroRange in the CustomUnitRanges module
+struct AxialRange{T<:Integer} <: AbstractUnitRange{T}
     start::T
     stop::T
     function AxialRange{T}(a, o) where {T}
@@ -74,7 +74,7 @@ function Base.show(io::IO, axr::AxialRange)
 end
 
 #N is 1 or 2 - if larger than 2 we're not talking about hexagons any more
-mutable struct HexagonArray{T, N} <: AbstractArray{T, N}
+struct HexagonArray{T, N} <: AbstractArray{T, N}
     vals::Array{T, N}
     axes::NTuple{N, AxialRange{Int64}}
     size::NTuple{N, Int64}
@@ -159,9 +159,11 @@ end
         return nothing
     end
 end
-#
 
 function Base.show(io::IO, ::MIME"text/plain", H::HexagonArray{T, N}, maxelwidth=9) where {T, N}
+    #Note that this displays the array in "rhombic" formation, which is slightly
+    #incorrect considering the desired layout is "rectangular."
+    #Will rewrite this if it proves to be a problem
     if maxelwidth % 2 == 0
         maxelwidth += 1
         #so maxelwidth - 3 is even, so that the offset can be half a column
@@ -209,7 +211,7 @@ Tests
 =#
 
 function testHexagonalArrays()
-    #Create a hexagonal array
+
     A = reshape(Vector(1:36), (6,6))
     H = HexagonArray(A)
 
@@ -219,12 +221,11 @@ function testHexagonalArrays()
     H[1,1] = 1207
     @assert H[1,1] == 1207
     try
-        print(H[-1, -1])
-        print("Failed negative check: accessed $(size(H)[2])×$(size(H)[1]) HexagonArray at [-1,-1]")
+        print(H[0, -4])
+        print("Failed negative check: accessed $(size(H)[2])×$(size(H)[1]) HexagonArray at [0,-4]")
     catch BoundsError
         #task failed successfully
     end
-    #return H
 end
 
 end
