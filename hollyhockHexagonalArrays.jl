@@ -13,7 +13,7 @@ struct AxialRange{T<:Integer} <: AbstractUnitRange{T}
     stop::T
     function AxialRange{T}(a, o) where {T}
         if a > o
-            error("first index greater than last")
+            throw(ArgumentError("AxialRange($a, $o): start must be <= stop"))
         else
             return new{T}(a, o)
         end
@@ -28,7 +28,8 @@ function AxialRange(a::Integer, o::Integer)
     T1 = typeof(a)
     T2 = typeof(o)
     if T1 != T2
-        error("start and stop mismatching types")
+        #TODO attempt to cast both to the larger type
+        throw(ErrorException("start and stop mismatching types"))
     else
         return AxialRange{T1}(a, o)
     end
