@@ -173,7 +173,7 @@ function Base.show(io::IO, ::MIME"text/plain", H::HexagonArray{T, N}, maxelwidth
     #Determine how much horizontal space each element will be given
     elwidth = 2
     for i in H
-        i == nothing ? l = 1 : l = length(repr(i))
+        isnothing(i) ? l = 1 : l = length(repr(i))
         #Actual max is 3 less (space for '...')
         if l >= maxelwidth - 3
             elwidth = maxelwidth - 3
@@ -190,7 +190,7 @@ function Base.show(io::IO, ::MIME"text/plain", H::HexagonArray{T, N}, maxelwidth
         r % 2 == 0 ? print(io, ' '^(1+floor(Int, (elwidth/2)))) : nothing
         for q in qax
             #get the string of the element and pad it to elwidth (both sides)
-            H[r, q] == nothing ? e = '•' : e = H[r, q]
+            isnothing(H[r, q]) ? e = '•' : e = H[r, q]
             s = lpad(e, ceil(Int, elwidth/2))
             s = rpad(s, elwidth)
             #if needed, also trim the element to fit
@@ -215,8 +215,10 @@ function testHexagonalArrays()
 
     A = reshape(Vector(1:36), (6,6))
     H = HexagonArray(A)
+    #print(H)
+    display(H)
 
-    @assert H[0,-2] == nothing
+    @assert isnothing(H[0,-2])
     @assert H[1,1] == 8
 
     H[1,1] = 1207
@@ -230,3 +232,4 @@ function testHexagonalArrays()
 end
 
 end
+

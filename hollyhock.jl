@@ -17,19 +17,49 @@ width of the triangle moved from one side of the square to the other to
 create the rhombus (this is simpler than it sounds)
 =#
 
+module Hollyhock
+
+
+include("hollyhockHexagonalArrays.jl")
+using .HexagonArrays
+
+#=
+The map is a rectangular grid of hexagonal tiles and the entities currently
+occupying each tile. Tiles are 8-bit unsigned integers; entities are simulation
+constructs of various kinds (creatures, parts thereof, energy sources, etc)
+=#
+
+const terraincolors = []
+
+abstract type Entity end
+
+struct WorldMap
+    tiles::HexagonArray{UInt8, 2}
+    entities::Array{Entity, 1}
+end
+
+function WorldMap(n::Integer)
+    #Constructor for an "empty" nxn map
+    WorldMap(HexagonArray(zeros(UInt8, n, n), Array{Entity, 1}(undef, 0)))
+end
+
+function getterraincolor(m::WorldMap, I::Vararg{Int})
+    return terraincolors[m.tiles[I]]
+end
+
 #=
 A Creature must:
 -Be able to move (based on its Locomotion traits and the local terrain)
 -Be able to interact (based on its Reach+Action traits and the surroundings)
 -[...]
-Creatures have Traits.
-A Trait is a function that a Creature uses to determine what it can do
-regarding something in its environment
-The function can be anything, but generally it will be a
-polynomial with coefficients given by the Creature's genes
-There doesn't seem to be a need to represent Traits with structs.
-Each Trait is simply an array of coefficients
+A creature is a collection of Cells and the linking structure of those,
+ie a graph where the nodes are Cells.
 =#
 mutable struct Creature
+
+end
+
+
+
 
 end
